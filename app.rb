@@ -1,5 +1,5 @@
 
-class Player
+class Player #A dispatcher dans des fichiers par classe plus tard
   attr_accessor :name, :choice
 
   def initialize(name, choice, board)
@@ -12,7 +12,7 @@ class Player
     @board.update_cell(cell, self.choice)
   end
 
-  def winner?
+  def victory?
     wins = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
             [0, 4, 8], [2, 4, 6]]
     wins.each do |win|
@@ -24,16 +24,15 @@ class Player
   end
 
   private
-#permet de lier les cellules à la classe joueur
   def cells
     @board.cells
   end
 
 end
-# Classe définissant le plateau de jeu
+
 class Board
   attr_accessor :cells
-#Permet de mettre à jour le tableau en fonction des inputs du joueur tout en garatissant que la cellule soit vide
+
   def initialize
     @cells = [
     "1", "2", "3",
@@ -41,7 +40,7 @@ class Board
     "7", "8", "9"
     ]
   end
-#Affichage du corps du tableau (valeurs de base + lignes verticales et horizontales)
+
   def update_cell(number, choice)
     if cell_free?(number)
       self.cells[number - 1] = choice.to_s
@@ -51,10 +50,8 @@ class Board
       return false
     end
   end
-#permet de limiter cette méthode à la classe Board
-#Permet de remplacer les cellules par le signe du joueur en checkant si elles
-#sont vides, sinon la cellule n'est pas complétée
-  def show_board
+
+  def show_board  # Code passé par Max D mais lui redemander pour hline et vline valeurs \u..., qu'est ce que cela veut dire
     hline = "\u2502"
     vline = "\u2500"
     cross = "\u253C"
@@ -70,9 +67,8 @@ class Board
     puts row3
   end
 
-#permet de limiter cette méthode à la classe Board
+
   private
-#Permet de remplacer les cellules par le signe du joueur en checkant si elles sont vides, sinon la cellule n'est pas complétée
   def cell_free?(number)
     cell = self.cells[number - 1]
     if cell == "X" ||  cell == "O"
@@ -83,7 +79,7 @@ class Board
   end
 
 end
-#Cette classe permet de mettre en place le jeu et de le lancer avec des valeurs de base
+
 class Game
 
   def initialize
@@ -92,7 +88,7 @@ class Game
     @winner = false
     @turn = 0
   end
-#Méthode permettant de lancer le jeu et de démarrer la partie et déterminer l'issue de la partie. On crée de nouveaux joueurs avec des noms récupérés de la méthode 'get_names'.
+
   def start_game
     names = get_names
     @player1 = Player.new(names[0], :X, @board)
@@ -108,23 +104,23 @@ class Game
   end
 
   private
- #le jouer peut entrer un nombre compris entre 1 et 9, si le nombre n'est pas compris dans cet intervalle un message s'affiche demandant de redonner une valeur.
+
   def turn
     puts " C'est le tour de #{@current_player.name}. Choisissez entre les cases (1-9): "
     choice = gets.chomp.to_i
     if choice > 9 || choice < 1
       puts "Avertissement: Votre choix doit se faire entre les cases vides de 1 à 9!"
     elsif @current_player.move(choice) != false
-      @winner = @current_player if @current_player.winner?
+      @winner = @current_player if @current_player.victory?
       @turn += 1
       switch_player
     end
   end
-# Méthode permettant de mettre en place les changement de joueur
+
   def switch_player
     @current_player = @current_player == @player1 ? @player2 : @player1
   end
-#Méthode permettant d'obtenir le nom des joueurs, on utilise le gest.chomp
+
   def get_names
     puts "Nom du joueur utilisant le X: "
     name1 = gets.chomp
