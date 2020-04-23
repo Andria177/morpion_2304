@@ -51,7 +51,7 @@ class Board
     end
   end
 
-  def show_board  # Code passé par Max D mais lui redemander pour hline et vline valeurs \u..., qu'est ce que cela veut dire
+  def show_board
     hline = "\u2502"
     vline = "\u2500"
     cross = "\u253C"
@@ -122,6 +122,7 @@ class Game
   end
 
   def get_names
+    puts "Bienvenue sur le Jeu Morpion. Veuillez choisir votre pion (X ou 0) et mettre votre prénom:"
     puts "Nom du joueur utilisant le X: "
     name1 = gets.chomp
     puts "Nom du joueur utilisant le 0: "
